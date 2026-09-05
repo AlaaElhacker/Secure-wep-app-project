@@ -40,7 +40,7 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
-    console.log('LOGIN ROUTE HIT:', req.body);
+    // console.log('LOGIN ROUTE HIT:', req.body);
     if (!username || !password) {
         return res.render('login', { error: 'Invalid username or password1.', registered: null });
     }
@@ -48,9 +48,9 @@ router.post('/login', async (req, res) => {
     try {
         const sql = `SELECT id, username, password, role FROM users WHERE username = '${username}'`;
         
-        console.log('SQL:', sql);
+        // console.log('SQL:', sql);
         const [rows] = await pool.query(sql);
-        console.log('Rows returned:', rows);
+        // console.log('Rows returned:', rows);
         const user = rows[0];
 
         if (user && (await bcrypt.compare(password, user.password))) {

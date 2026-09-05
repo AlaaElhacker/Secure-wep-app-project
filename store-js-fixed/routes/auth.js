@@ -62,36 +62,33 @@ router.get('/login', (req, res) => {
 router.post('/login', loginLimiter, async (req, res) => {
     const { username, password } = req.body;
 
-    // ============================================
-    // SECURED VERSION (Person 1's task):
-    // Uses a parameterized query, so user input is never
-    // concatenated directly into the SQL string.
-    //
-    // In the VULNERABLE VERSION, this would instead look like:
-    //   const sql = `SELECT * FROM users WHERE username = '${username}'`;
-    //   const [rows] = await pool.query(sql);
-    // which allows a payload like:  ' OR '1'='1' -- 
-    // to bypass authentication entirely.
-    // ============================================
-    const [rows] = await pool.query(
-        'SELECT id, username, password, role FROM users WHERE username = ?',
-        [username]
-    );
-    const user = rows[0];
+    if (!username || !password) {
+        return res.render('login', { error: 'Invalid username or password.', registered: null });
+    }
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-        req.session.regenerate((err) => {
-            if (err) return res.render('login', { error: 'Something went wrong.', registered: null });
-            req.session.userId = user.id;
-            req.session.username = user.username;
-            req.session.role = user.role;
-            res.redirect('/products');
-        });
-    } else {
+    try {
+        const [rows] = await pool.query(
+            'SELECT id, username, password, role FROM users WHERE username = ?',
+            [username]
+        );
+        const user = rows[0];
+
+        if (user && (await bcrypt.compare(password, user.password))) {
+            req.session.regenerate((err) => {
+                if (err) return res.render('login', { error: 'Something went wrong.', registered: null });
+                req.session.userId = user.id;
+                req.session.username = user.username;
+                req.session.role = user.role;
+                res.redirect('/products');
+            });
+        } else {
+            res.render('login', { error: 'Invalid username or password.', registered: null });
+        }
+    } catch (err) {
+        console.error('Login error:', err);
         res.render('login', { error: 'Invalid username or password.', registered: null });
     }
 });
-
 router.get('/logout', (req, res) => {
     req.session.destroy(() => res.redirect('/login'));
 });

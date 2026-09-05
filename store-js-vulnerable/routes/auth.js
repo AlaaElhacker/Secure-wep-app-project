@@ -40,40 +40,33 @@ router.get('/login', (req, res) => {
 
 router.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log('LOGIN ROUTE HIT:', req.body);
+    if (!username || !password) {
+        return res.render('login', { error: 'Invalid username or password1.', registered: null });
+    }
 
-    // ============================================
-    // VULNERABLE VERSION (Person 1's task):
-    // Username is concatenated directly into the SQL string instead of
-    // using a parameterized query/placeholder. This allows an attacker
-    // to break out of the string literal and change the query's logic.
-    //
-    // Example payload for the "username" field:
-    //   ' OR '1'='1' -- 
-    // This turns the query into:
-    //   SELECT id, username, password, role FROM users
-    //   WHERE username = '' OR '1'='1' -- '
-    // which matches the first row in the table regardless of credentials,
-    // often logging the attacker in as the very first user (commonly admin).
-    //
-    // A more targeted payload like:
-    //   admin' -- 
-    // comments out the rest of the query and can also be combined with a
-    // UNION SELECT to exfiltrate arbitrary data from other tables.
-    // ============================================
-    const sql = `SELECT id, username, password, role FROM users WHERE username = '${username}'`;
-    const [rows] = await pool.query(sql);
-    const user = rows[0];
+    try {
+        const sql = `SELECT id, username, password, role FROM users WHERE username = '${username}'`;
+        
+        console.log('SQL:', sql);
+        const [rows] = await pool.query(sql);
+        console.log('Rows returned:', rows);
+        const user = rows[0];
 
-    if (user && (await bcrypt.compare(password, user.password))) {
-        req.session.regenerate((err) => {
-            if (err) return res.render('login', { error: 'Something went wrong.', registered: null });
-            req.session.userId = user.id;
-            req.session.username = user.username;
-            req.session.role = user.role;
-            res.redirect('/products');
-        });
-    } else {
-        res.render('login', { error: 'Invalid username or password.', registered: null });
+        if (user && (await bcrypt.compare(password, user.password))) {
+            req.session.regenerate((err) => {
+                if (err) return res.render('login', { error: 'Something went wrong.', registered: null });
+                req.session.userId = user.id;
+                req.session.username = user.username;
+                req.session.role = user.role;
+                res.redirect('/products');
+            });
+        } else {
+            res.render('login', { error: 'Invalid username or password2.', registered: null });
+        }
+    } catch (err) {
+        console.error('Login error:', err);
+        res.render('login', { error: 'Invalid username or password3', registered: null });
     }
 });
 

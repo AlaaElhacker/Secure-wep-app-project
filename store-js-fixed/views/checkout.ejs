@@ -1,0 +1,16 @@
+<%- include('partials/header') %>
+
+<h1>Checkout</h1>
+
+<p>Shipping to: <strong><%= address || 'No address on file' %></strong></p>
+
+<% if (!address) { %>
+    <p class="alert">Please <a href="/profile">add a shipping address</a> before checking out.</p>
+<% } else { %>
+    <form method="post" action="/orders/checkout">
+        <input type="hidden" name="csrf_token" value="<%= csrfToken %>">
+        <button type="submit">Place Order</button>
+    </form>
+<% } %>
+
+<%- include('partials/footer') %>

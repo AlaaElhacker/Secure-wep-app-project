@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+
+<h1>My Orders</h1>
+
+<% if (orders.length === 0) { %>
+    <p>You have no orders yet.</p>
+<% } else { %>
+    <table class="cart-table">
+        <tr><th>Order #</th><th>Date</th><th>Total</th><th>Status</th><th></th></tr>
+        <% orders.forEach(function(o) { %>
+            <tr>
+                <td>#<%= o.id %></td>
+                <td><%= o.created_at %></td>
+                <td>$<%= Number(o.total).toFixed(2) %></td>
+                <td><%= o.status %></td>
+                <td><a href="/orders/<%= o.id %>">View</a></td>
+            </tr>
+        <% }); %>
+    </table>
+<% } %>
+
+<%- include('partials/footer') %>

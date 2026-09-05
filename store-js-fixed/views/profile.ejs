@@ -1,0 +1,19 @@
+<%- include('partials/header') %>
+
+<h1>My Profile</h1>
+
+<% if (error) { %><p class="alert"><%= error %></p><% } %>
+<% if (success) { %><p class="success"><%= success %></p><% } %>
+
+<p><strong>Username:</strong> <%= user.username %></p>
+<p><strong>Email:</strong> <%= user.email %></p>
+
+<form method="post" action="/profile" class="form">
+    <input type="hidden" name="csrf_token" value="<%= csrfToken %>">
+    <label>Shipping Address
+        <input type="text" name="address" value="<%= user.address || '' %>">
+    </label>
+    <button type="submit">Save</button>
+</form>
+
+<%- include('partials/footer') %>

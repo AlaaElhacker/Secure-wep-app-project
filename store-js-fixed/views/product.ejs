@@ -1,0 +1,62 @@
+<%- include('partials/header') %>
+
+<h1><%= product.name %></h1>
+<img class="product-img-large" src="<%= product.image %>" alt="<%= product.name %>">
+<p><%= product.description %></p>
+<p class="price">$<%= product.price %></p>
+
+<form method="post" action="/cart/add" class="inline-form">
+    <input type="hidden" name="product_id" value="<%= product.id %>">
+    <input type="hidden" name="csrf_token" value="<%= csrfToken %>">
+    <button type="submit">Add to Cart</button>
+</form>
+
+<h2>Reviews</h2>
+
+<% if (error) { %>
+    <p class="alert"><%= error %></p>
+<% } %>
+
+<div class="reviews">
+    <% reviews.forEach(function(r) { %>
+        <div class="review">
+            <strong><%= r.username %></strong>
+            (<%= r.rating %>/5)
+            <!-- ============================================
+                 SECURED VERSION (Person 2's task):
+                 <%= %> HTML-escapes the comment automatically,
+                 so it renders as plain text, not markup.
+
+                 In the VULNERABLE VERSION this line would instead use
+                 the unescaped output tag:  <%- r.comment %>
+                 which lets a comment like <script>...</script>
+                 execute in every visitor's browser (Stored XSS).
+            ============================================ -->
+            <p><%= r.comment %></p>
+        </div>
+    <% }); %>
+</div>
+
+<% if (isLoggedIn) { %>
+    <h3>Leave a review</h3>
+    <form method="post" action="/products/<%= product.id %>/reviews" class="form">
+        <input type="hidden" name="csrf_token" value="<%= csrfToken %>">
+        <label>Rating
+            <select name="rating">
+                <option value="5">5</option>
+                <option value="4">4</option>
+                <option value="3">3</option>
+                <option value="2">2</option>
+                <option value="1">1</option>
+            </select>
+        </label>
+        <label>Comment
+            <textarea name="comment" required></textarea>
+        </label>
+        <button type="submit">Submit Review</button>
+    </form>
+<% } else { %>
+    <p><a href="/login">Log in</a> to leave a review.</p>
+<% } %>
+
+<%- include('partials/footer') %>

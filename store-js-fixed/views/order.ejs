@@ -1,0 +1,22 @@
+<%- include('partials/header') %>
+
+<h1>Order #<%= order.id %></h1>
+
+<p><strong>Status:</strong> <%= order.status %></p>
+<p><strong>Shipping Address:</strong> <%= order.shipping_address %></p>
+<p><strong>Placed on:</strong> <%= order.created_at %></p>
+
+<table class="cart-table">
+    <tr><th>Product</th><th>Qty</th><th>Price</th></tr>
+    <% items.forEach(function(i) { %>
+        <tr>
+            <td><%= i.name %></td>
+            <td><%= i.quantity %></td>
+            <td>$<%= Number(i.price).toFixed(2) %></td>
+        </tr>
+    <% }); %>
+</table>
+
+<p class="total">Total: $<%= Number(order.total).toFixed(2) %></p>
+
+<%- include('partials/footer') %>

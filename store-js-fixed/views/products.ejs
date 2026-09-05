@@ -1,0 +1,23 @@
+<%- include('partials/header') %>
+
+<h1>Products</h1>
+
+<form method="get" action="/products" class="search-form">
+    <input type="text" name="q" placeholder="Search products..." value="<%= search %>">
+    <button type="submit">Search</button>
+</form>
+
+<div class="product-grid">
+    <% products.forEach(function(p) { %>
+        <div class="product-card">
+            <a href="/products/<%= p.id %>">
+                <img class="product-img" src="<%= p.image %>" alt="<%= p.name %>">
+            </a>
+            <h3><a href="/products/<%= p.id %>"><%= p.name %></a></h3>
+            <p><%= p.description.substring(0, 80) %>...</p>
+            <p class="price">$<%= p.price %></p>
+        </div>
+    <% }); %>
+</div>
+
+<%- include('partials/footer') %>

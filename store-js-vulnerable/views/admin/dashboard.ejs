@@ -1,0 +1,13 @@
+<%- include('../partials/header') %>
+
+<h1>Admin Dashboard</h1>
+
+<div class="stats">
+    <div class="stat-card"><strong><%= productCount %></strong><span>Products</span></div>
+    <div class="stat-card"><strong><%= orderCount %></strong><span>Orders</span></div>
+    <div class="stat-card"><strong><%= userCount %></strong><span>Users</span></div>
+</div>
+
+<p><a href="/admin/products" class="button">Manage Products</a></p>
+
+<%- include('../partials/footer') %>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Mini Store</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="navbar">
+    <a href="/products" class="logo">Mini Store</a>
+    <nav>
+        <a href="/products">Products</a>
+        <a href="/cart">Cart</a>
+        <% if (isLoggedIn) { %>
+            <a href="/orders">My Orders</a>
+            <a href="/profile">Profile</a>
+            <% if (isAdmin) { %>
+                <a href="/admin/dashboard">Admin</a>
+            <% } %>
+            <a href="/logout">Logout</a>
+        <% } else { %>
+            <a href="/login">Login</a>
+            <a href="/register">Register</a>
+        <% } %>
+    </nav>
+</header>
+<main class="container">

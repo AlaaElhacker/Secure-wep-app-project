@@ -12,8 +12,7 @@ and MySQL.
 
 | # | Vulnerability | File(s) | What was weakened |
 |---|---|---|---|
-| 1 | SQL Injection | `routes/auth.js` (login) | Username concatenated directly into the SQL string instead of using a placeholder. Try ' UNION SELECT 1, 'admin2', '$2b$10$Lu5WfWLIyXm/DqbD5U3Ype/V3RUL1SwlcTU.JxemoTVR2ubenfjTG', 'admin' -- h
-123 ` as the username and `123` as password to bypass the password check. |
+| 1 | SQL Injection | `routes/auth.js` (login) | Username concatenated directly into the SQL string instead of using a placeholder. Try ' UNION SELECT 1, 'admin2', '$2b$10$Lu5WfWLIyXm/DqbD5U3Ype/V3RUL1SwlcTU.JxemoTVR2ubenfjTG', 'admin' -- h` as the username and `123` as password to bypass the password check. |
 | 2 | Stored XSS | `views/product.ejs` (reviews) | Review comments rendered with EJS's unescaped `<%- %>` tag. Submit a review containing `<script>alert(document.cookie)</script>`. |
 | 3 | CSRF | `routes/profile.js` | The CSRF token is generated and put in the form, but the server never checks it on submit. |
 | 4 | IDOR | `routes/orders.js` (`GET /orders/:id`) | No check that the order belongs to the logged-in user — browse `/orders/1`, `/orders/2`, etc. |
